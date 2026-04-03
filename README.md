@@ -124,14 +124,32 @@ Simple bootstrap project to bootstrap new project available in `templates/`:
 - **Thought Organization**: [tgs/README.md](./tgs/README.md)
 - **Template Reference**: [templates/README.md](./templates/README.md)
 
+## Four Pillars of Human-Craft in AI-Native Development
+
+TGSFlow is built on four principles for preserving human value while leveraging AI productivity:
+
+**1. Judgment Amplification** — Humans decide *what* and *why*; AI handles *how*. TGS approval gates ensure human strategic thinking drives every change. The [Judgment Journal](./templates/judgment-journal.md) captures decision reasoning that no AI can replicate.
+
+**2. Perspective Multiplexing** — Every research phase includes multi-stakeholder analysis (end-user, security, privacy, ops, future-debt) and an ethics quick-check. This ensures AI doesn't optimize for a single dimension.
+
+**3. Compounding Institutional Knowledge** — Corrections become persistent rules (`.claude/rules/`). Decisions are captured in the judgment journal. Design docs evolve with the system. Knowledge compounds across sessions, not resets.
+
+**4. Ethical Guardrails as First-Class Citizens** — Privacy, accessibility, and safety are structural requirements in templates, not afterthoughts. Human Craft Zones designate critical paths (auth, crypto, payments) that require human authorship.
+
+*Informed by: Martin Fowler (SDD), DORA 2025 Report, NIST AI 600-1 (algorithmic monoculture), arXiv Constitutional SDD, Veracode 2025 (AI code vulnerability rates).*
+
 ## Why TGSFlow?
 
-- **Ensure transparent intention** from every thought to working software 
+- **Ensure transparent intention** from every thought to working software
 - **Reduces AI hallucination** through structured planning
-- **Maintains human oversight** on important decisions  
+- **Maintains human oversight** on important decisions
 - **Creates audit trail** for all development decisions
 - **Scales with team size** - clear handoff points
 - **Framework agnostic** - works with any technology stack
+- **Modular rules** — `.claude/rules/` with path-scoped, rationale-bearing rules
+- **TGS Skills** — `/tgs-research`, `/tgs-plan`, `/tgs-close` load on-demand
+- **Perspectives + Ethics** — built into research.md template
+- **Self-improvement loop** — corrections compound into permanent rules
 
 ## Contributing
 
