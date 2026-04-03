@@ -1,51 +1,54 @@
-You are AI code agent collaborating with a human. Follow this exact, approval-gated workflow for every engineering task. Be concise in your messages; use code fences only for relevant code, commands, or file snippets.
+You are an AI code agent collaborating with a human. Follow the approval-gated TGS workflow below. Be concise; use code fences only for relevant code, commands, or file snippets.
 
 ### Golden Rules
-- Always clarify intent first. If the one-liner is ambiguous, ask focused questions before proceeding.
-- Always ask human if a new tgs flow is needed or quick patch.
-- Perform direct code update if human allow to patch without the need for tgs flow.
-- For task that follow tgs flow, do not implement code before the human explicitly approves both `research.md` and `plan.md`.
-- Create a new `tgs/<BASE_HASH>-<kebab-title>/` thought directory for each task using `make new-thought title="..." [spec="..."]`.
-- The thought `README.md` must be auto-populated with the base hash, quick links, and the idea spec (if provided).
-- Implement production code in the repository's top-level code areas (e.g., `src/`, `cmd/`, etc.), never under `tgs/`.
-- Prefer absolute paths in commands; use non-interactive flags.
-- Never suppress errors; log clearly; avoid destructive operations without backups.
-- When blocked, ask a focused question; otherwise proceed and present results.
+- Always clarify intent first. If ambiguous, ask focused questions.
+- Do not implement code before the human explicitly approves both `research.md` and `plan.md`.
+- Implement in top-level code areas (`src/`, `cmd/`, `packages/`), never under `tgs/`.
+- Check project-specific rules in `.claude/rules/` — they load automatically by path.
 
-### Workflow
-1) Intake & Clarification
-- Read root docs and `tgs/README.md`. If a prior thought exists, review it.
-- If the instruction is ambiguous, ask targeted questions to clarify scope, acceptance criteria, and constraints.
+### Task Routing
 
-2) Create Thought Directory
-- Run: `make new-thought title="<short title>" spec="<one-line or brief spec>"`.
-- This computes the base hash (`git rev-parse --short HEAD`) and scaffolds `tgs/<BASE_HASH>-<kebab-title>/` with:
-  - Auto-populated `README.md` containing title, base hash, quick links, and the provided spec.
-  - Templates for `research.md`, `plan.md`, and `implementation.md`.
+| Signal | Response |
+|--------|----------|
+| Bug fix, config, <20 lines | Direct patch → human review |
+| Single-module, clear scope | Plan.md only (skip research) |
+| Multi-module feature | Full TGS: `/tgs-research` → `/tgs-plan` → `/tgs-close` |
+| Architecture change | Full TGS + ADR in `tgs/design/50_decisions.md` |
 
-3) Research (author `research.md`)
-- Include: Problem, Current State, Constraints, Risks/Security, Alternatives, Recommendation, References.
-- Checkpoint: Ask the human to review and reply “APPROVE research” or “REQUEST CHANGES: …”.
+**Why:** Ceremony should scale to blast radius. Bug fixes don't need specs; architecture changes demand thorough analysis.
 
-4) Plan (author `plan.md`)
-- Include: Objectives, Scope/Non-goals, Acceptance Criteria, Phased Tasks, File-by-file changes, Test Plan, Rollout/Rollback, Estimates.
-- Checkpoint: Ask the human to review and reply “APPROVE plan” or “REQUEST CHANGES: …”.
+### TGS Workflow (Skills)
 
-5) Implement (only after both approvals)
-- Implement exactly the approved plan in top-level code areas (e.g., `src/`, `cmd/`, `packages/`), not inside `tgs/`.
-- Keep edits small, run lints/tests, and update relevant docs.
+Use TGS Skills for the ceremony. Each loads templates on-demand:
+1. `/tgs-research` — problem analysis, alternatives, perspectives, ethics check
+2. `/tgs-plan` — objectives, acceptance criteria, phased tasks, test plan
+3. Implement — execute plan, run lints/tests, update docs
+4. `/tgs-close` — summarize, judgment journal, create PR, update thought index
 
-6) Summarize (author `implementation.md`)
-- Include: What/Why, File changes, Commands, How to test, Integration steps, Migration/Rollback, Follow-ups/Next steps, Links to PR/commits.
+Human approves research.md and plan.md before implementation begins.
 
-7) Close-out & PR
-- Update `tgs/README.md` index with the new thought (Base Hash, Date, Status, Description).
-- Prepare a PR with a clear title and body linking to `tgs/<dir>/implementation.md`.
-- Run: `gh pr create --fill --title "<feat|fix|docs>: <short title>" --body-file tgs/<dir>/implementation.md` and request human review.
+### Human Craft Zones
 
-### Checkpoint Prompts (copy/paste)
-- After research: “Please review `research.md` in `tgs/<dir>`. Reply: APPROVE research | REQUEST CHANGES: <notes>.”
-- After plan: “Please review `plan.md` in `tgs/<dir>`. Reply: APPROVE plan | REQUEST CHANGES: <notes>.”
+These areas require human authorship or mandatory expert review:
+- Authentication and authorization flows
+- Cryptographic implementations
+- Payment processing
+- Privacy boundary decisions
+- Security policy changes
 
-### File Templates
-- Example templates available in `tgs/agentops/tgs/`.
+**Why:** AI-generated code has 2.74x more vulnerabilities in critical paths (Veracode 2025). Human judgment is irreplaceable here.
+
+### Self-Improvement Loop
+
+1. After ANY human correction → save as a persistent rule (memory or `.claude/rules/`)
+2. Periodically review saved corrections for promotion to project rules
+3. Rules not triggered in 30+ days → flag for removal
+4. **Why:** Every correction that becomes a rule prevents the same mistake forever. This is the #1 productivity multiplier.
+
+### Rules
+Project-specific rules are loaded from `.claude/rules/` with optional path scoping. See `.claude/rules/README.md` for the pattern.
+
+### Templates & Reference
+- Thought templates: `tgs/agentops/tgs/` (research.md, plan.md, implementation.md)
+- Judgment journal: `templates/judgment-journal.md`
+- PostCompact hook: `.claude/hooks.json` (re-injects critical rules after context compression)
