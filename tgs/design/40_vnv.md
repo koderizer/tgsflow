@@ -27,7 +27,7 @@
 | SR-012 | D      | Commands (`tgs init`, `tgs verify`, `tgs agent exec`) run with flags non-interactively (no prompts). | Command runs/logs |
 | SR-013 | I      | Templates exist under `templates/{react,python,go,cli}/` and are buildable or runnable per their readmes. | Directory listing |
 | SR-014 | I/D    | Workflow phases are followed: Research → Plan → Approval → Implement → Document; evidence in thought directories. | Thought documentation trail |
-| SR-015 | T      | Running decorate mode installs only minimal `tgs/` from templates under `templates/data/tgs/`; no repo-specific thought dirs are copied. | `./scripts/bootstrap.sh --decorate --dry-run` output and filesystem check |
+| SR-015 | T      | Running `bootstrap.sh` or `tgs init` installs the scaffold tree from `src/templates/scaffold/` including `.claude/`, `CLAUDE.md`, `Makefile.tgs.mk`, and `tgs/` (minus `tgs/thoughts/`). | `./scripts/bootstrap.sh --dry-run` and `TestInitSeedsFiles` |
 | NFR-001 | I     | Every code change is traceable to a thought directory (commit/PR references `tgs/<hash>-*/`). | Repo history & PRs |
 | NFR-002 | T     | Build and basic commands succeed on macOS and Linux. | `make build && ./bin/tgs --version` on both OSes |
 | NFR-003 | T     | `tgs verify` returns exit code 0/!=0 appropriately. | CI job or local script |
@@ -42,13 +42,13 @@
 | SR-027 | T      | Executing `tgs/adapters/gemini-code.sh --prompt-text test --context-glob "README.md"` returns text output and exit code 0; passing a missing prompt or context yields non-zero with clear stderr. | `go test ./src/core/brain -run TestShellTransport*` with adapter path overridden |
 | SR-020 | T      | `shellTransport.Chat` invokes the adapter and returns output text; errors on non-zero exit; respects context deadline. | `go test ./src/core/brain -run TestShellTransport*` |
 | SR-021 | T      | `tgs context pack "auth"` creates `aibrief.md` under active thought with merged context/requirements. | CLI run, file exists and includes sources |
-| SR-022 | I      | Prompt templates for search and brief exist under `templates/data/tgs/` and are referenced by the command. | File presence and code reference |
+| SR-022 | I      | Prompt files for search and brief ship under `src/templates/scaffold/tgs/agentops/prompts/` and land at `tgs/agentops/prompts/` after init; referenced by the command. | File presence and code reference |
 | SR-023 | I      | `aibrief.md` items include path and anchor/line ranges to source material. | Inspect generated brief |
 | SR-024 | T      | Token count in generated brief is <= configured `context_pack_tokens`. | Measure tokens or approximate count |
 | SR-025 | A/I    | Secrets are redacted per configured patterns; no raw secrets appear in output. | Rule inspection and sample runs |
 
 | SR-028 | T      | After `tgs init`, `tgs/adapters/claude-code.sh` and `tgs/adapters/gemini-code.sh` exist and are executable if previously missing. | Filesystem check and `test -x` |
-| SR-029 | T      | Running `tgs init claude` (or `gemini`) creates `CLAUDE.md` (`GEMINI.md`) at repo root if absent; if present, command exits non-zero with an instructive error. | CLI run and file presence/error behavior |
+| SR-029 | T      | `tgs init` installs root `CLAUDE.md` and `.claude/{rules,commands,hooks.json}` from the scaffold; idempotent by default, overwritten only with `--force`. | `TestInitSeedsFiles`, `TestInit_IdempotentByDefault`, `TestInit_ForceOverwrites` |
 | SR-030 | T      | After `tgs init` on a repo without a `new-thought` target, the root `Makefile` contains the standard `new-thought` rule. | Inspect `Makefile` content |
 
 ## Test Environments

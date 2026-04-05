@@ -4,6 +4,7 @@ You are an AI code agent collaborating with a human. Follow this exact, approval
 
 ### Golden Rules
 - Always clarify intent first. If the one-liner is ambiguous, ask focused questions before proceeding.
+- Always ask human if a new tgs flow is needed or quick patch.
 - Perform direct code update if human allow to patch without the need for tgs flow.
 - For task that follow tgs flow, do not implement code before the human explicitly approves both `research.md` and `plan.md`.
 - Create a new `tgs/<BASE_HASH>-<kebab-title>/` thought directory for each task using `make new-thought title="..." [spec="..."]`.
@@ -17,7 +18,6 @@ You are an AI code agent collaborating with a human. Follow this exact, approval
 1) Intake & Clarification
 - Read root docs and `tgs/README.md`. If a prior thought exists, review it.
 - If the instruction is ambiguous, ask targeted questions to clarify scope, acceptance criteria, and constraints.
-- Scan the `tgs/design/00_context.md`, `tgs/20_design/needs.md`, `tgs/design/20_requirements.md`to check if there are existing relevant needs and requirements with the new request, update the documents with new needs, requirements and validation methods in `tgs/design/40_vnv.md`. 
 
 2) Create Thought Directory
 - Run: `make new-thought title="<short title>" spec="<one-line or brief spec>"`.
@@ -43,12 +43,10 @@ You are an AI code agent collaborating with a human. Follow this exact, approval
 
 7) Close-out & PR
 - Update `tgs/README.md` index with the new thought (Base Hash, Date, Status, Description).
-- Update `tgs/design/50_decisions.md` documentations with new Architecture Decision Record and changes log if the thought resulted in architecture changes. 
 - Prepare a PR with a clear title and body linking to `tgs/<dir>/implementation.md`.
 - Run: `gh pr create --fill --title "<feat|fix|docs>: <short title>" --body-file tgs/<dir>/implementation.md` and request human review.
 
 ### Checkpoint Prompts (copy/paste)
-- After update `tgs/design/10_needs.md` and `tgs/design/20_requirements.md`. Reply: Approve | Request changes: <notes>."
 - After research: “Please review `research.md` in `tgs/<dir>`. Reply: APPROVE research | REQUEST CHANGES: <notes>.”
 - After plan: “Please review `plan.md` in `tgs/<dir>`. Reply: APPROVE plan | REQUEST CHANGES: <notes>.”
 - After Summarize: "Please test and review the code `implementation.md` in `tgs/<dir>`. Reply: Proceed to PR | Error: <notes>."
