@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'CRITICAL RULES (re-injected after compaction):\n- Check .claude/rules/ for project-specific hard rules\n- Do not implement before human approves research.md and plan.md\n- Check COMPONENTS.md before creating any new file\n- Human Craft Zones (auth, crypto, payments) need human review'"
+          }
+        ]
+      }
+    ]
+  }
+}

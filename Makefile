@@ -13,18 +13,16 @@ test:
 tidy:
 	go mod tidy
 
-.PHONY: help new-thought bootstrap test-bootstrap clean-templates install-cli install-cli-dry-run test-install ears-gen
+.PHONY: help new-thought install-cli install-cli-dry-run test-install ears-gen
 
 help:
 	@echo "Targets:"
 	@echo "  new-thought title=\"short title\" [spec=\"idea\"]   Scaffold a new TGS thought directory"
-	@echo "  bootstrap                          Test bootstrap script locally"
-	@echo "  test-bootstrap                     Test bootstrap with all templates"
-	@echo "  clean-templates                    Clean template artifacts"
 	@echo "  install-cli                        Install latest tgs via scripts/install.sh"
 	@echo "  install-cli TAG=vX.Y.Z             Install specific tag (requires published release)"
 	@echo "  install-cli-dry-run                Print resolved URL/paths without installing"
 	@echo "  test-install                       Dry-run + URL HEAD checks for installer"
+	@echo "  ears-gen                           Regenerate ANTLR parser for EARS grammar"
 
 
 new-thought:
@@ -45,24 +43,6 @@ new-thought:
 		} > "$$DIR/README.md"; \
 	fi; \
 	echo "Created $$DIR"
-
-bootstrap:
-	@echo "Testing bootstrap script locally..."
-	@if [ ! -f "bootstrap.sh" ]; then echo "bootstrap.sh not found"; exit 1; fi
-	@echo "Run: ./bootstrap.sh"
-	@echo "Note: This will clone the current directory structure"
-
-test-bootstrap:
-	@echo "Testing bootstrap script with dry run..."
-	@./bootstrap.sh --dry-run 2>/dev/null || echo "Add --dry-run support to bootstrap.sh for testing"
-
-clean-templates:
-	@echo "Cleaning template artifacts..."
-	@find templates/ -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find templates/ -name "target" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find templates/ -name "dist" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find templates/ -name "*.log" -type f -delete 2>/dev/null || true
-	@echo "Template artifacts cleaned"
 
 install-cli:
 	@bash ./scripts/install.sh

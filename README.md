@@ -12,14 +12,15 @@ Bootstrap a new project or apply on top of any existing project with TGSFlow in 
 curl -sSL https://raw.githubusercontent.com/akelv/tgsflow/main/scripts/bootstrap.sh | bash
 ```
 
-What this does (safe, idempotent):
-- Decorates the current repo or scaffolds a new one with the TGS workflow.
-- Adds a `make new-thought` target (via `tgs.mk`) to scaffold thought folders.
-- Writes core docs and directories under `tgs/`:
-  - `tgs/thoughts/` — per-thought dirs created by `make new-thought`.
+What this does (safe, idempotent — re-run any time, add `--force` to upgrade):
+- Downloads the TGS scaffold from this repo and copies it into the current directory.
+- Writes the modern Claude Code setup: `CLAUDE.md`, `.claude/rules/`, `.claude/commands/` (slash commands `/tgs-research`, `/tgs-plan`, `/tgs-close`), `.claude/hooks.json`.
+- Writes the TGS tree under `tgs/`:
   - `tgs/design/` — long-lived system design docs (context, needs, architecture, V&V).
-  - `tgs/agentops/` — workflow guide (`AGENTOPS.md`) and thought templates (`tgs/*`).
-  - `tgs/adapters/` — model/tool adapters (default: `claude-code.sh`).
+  - `tgs/agentops/` — workflow guide (`AGENTOPS.md`), thought templates, and prompts.
+  - `tgs/adapters/` — shell adapters for Claude and Gemini CLIs.
+  - `tgs/thoughts/` — per-thought dirs created by `make new-thought` (never overwritten by `--force`).
+- Adds `Makefile.tgs.mk` and ensures the root `Makefile` includes it, so `make new-thought` works immediately.
 
 ## Install the tiny invisible tgs cli to improve thought quality (WIP)
 

@@ -18,20 +18,20 @@ Use **“The system shall …”** style. One “shall” per requirement.
 - **SR-013**: While starting new services, the system shall provide ready-to-use templates for React, Python, Go, and CLI under `templates/`. (Verification: Inspection)
 - **SR-014**: While maintaining safety for human use, the system shall enforce an approval-gated workflow with phases: Research → Plan → Human Approval → Implement → Document. (Verification: Demonstration)
 
-- **SR-015**: When initializing or decorating a project via the bootstrap script, the system shall scaffold a minimal `tgs/` directory using repository-agnostic templates under `templates/data/tgs/`, excluding project-specific thought history. (Verification: Test)
+- **SR-015**: When initializing or decorating a project via the bootstrap script or `tgs init`, the system shall scaffold a repository-agnostic tree from plain files under `src/templates/scaffold/`, including `.claude/`, `CLAUDE.md`, `Makefile.tgs.mk`, and `tgs/` (excluding `tgs/thoughts/` user content). (Verification: Test)
 
-- **SR-016**: When running `tgs init`, the system shall mirror an organization-approved `tgs/` scaffolding from either embedded templates, a local directory, a remote archive, or a standard git repository (optionally at a specified ref and subdirectory). (Verification: Test)
-- **SR-017**: While rendering scaffolding, the system shall apply `.tmpl` templates and copy non-template files as-is, preserving existing files for idempotency. (Verification: Test)
-- **SR-018**: While sourcing templates remotely, the system shall clean up temporary files and directories after completion. (Verification: Inspection)
+- **SR-016**: When running `tgs init`, the system shall copy the embedded scaffold verbatim (no templating) into the current directory; existing files are preserved by default and may be overwritten with `--force`. (Verification: Test)
+- **SR-017**: While copying scaffolding, the system shall never overwrite files under `tgs/thoughts/` regardless of the `--force` flag. (Verification: Test)
+- **SR-018**: While downloading the scaffold via `bootstrap.sh`, the system shall clean up temporary files and directories after completion (trap on EXIT). (Verification: Inspection)
 - **SR-019**: While applying guardrails, the system shall include `tgs/agentops/AGENTOPS.md` and design docs under `tgs/design/` to enforce the approval-gated workflow for AI agent collaboration. (Verification: Inspection)
 
 - **SR-020**: While operating in shell AI mode, the system shall provide a Shell Transport that executes the default adapter (`tgs/adapters/claude-code.sh`) with a composed prompt and optional context files, and returns the adapter output as `ChatResp.Text`, honoring timeouts and exit codes. (Verification: Test)
 
 - **SR-027**: While operating in shell AI mode, the system shall support a Gemini adapter script (`tgs/adapters/gemini-code.sh`) with the same interface as the Claude adapter (prompt via `--prompt-text|--prompt-file`, deterministic context file expansion, optional timeout, suggestions routing), returning text to stdout and non-zero on error. (Verification: Test)
 
-- **SR-028**: When running `tgs init`, the system shall also ensure adapter scripts exist under `tgs/adapters/` (at least `claude-code.sh` and `gemini-code.sh`), copying from embedded templates if missing. (Verification: Test)
-- **SR-029**: The system shall support `tgs init claude` and `tgs init gemini` subcommands that perform additional decoration such as copying `tgs/agentops/AGENTOPS.md` to the repository root as `CLAUDE.md` or `GEMINI.md` only if absent, otherwise exit with a clear error instructing manual override. (Verification: Test)
-- **SR-030**: When initializing a repository, if the root `Makefile` lacks a `new-thought` target, the system shall append or create it with the standard implementation to enable the TGS workflow. (Verification: Test)
+- **SR-028**: When running `tgs init` or `bootstrap.sh`, the system shall ensure adapter scripts (`tgs/adapters/claude-code.sh`, `tgs/adapters/gemini-code.sh`) are installed with the executable bit set. (Verification: Test)
+- **SR-029**: When initializing a repository, the system shall ship a root `CLAUDE.md` and `.claude/` tree (rules, slash commands, hooks) as part of the scaffold, so the Claude Code workflow is usable immediately. (Verification: Test)
+- **SR-030**: When initializing a repository, if the root `Makefile` lacks a `new-thought` target and does not already `include Makefile.tgs.mk`, the system shall append (or create) the include line so `make new-thought` is available. (Verification: Test)
 
 - **SR-021**: When running `tgs context pack "<query>"`, the system shall collect relevant sections from `tgs/design/` and the active thought directory into `aibrief.md`. (Verification: Test)
 - **SR-022**: The system shall construct the brief using templated prompts to guide a repository-aware search via the brain shell agent. (Verification: Inspection)
